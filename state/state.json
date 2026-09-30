@@ -4,7 +4,7 @@
     "url": "https://www.ticketmaster.fr/fr/manifestation/celine-dion-billet/idmanif/655223/idseance/4309061/attribauto",
     "final_url": "https://www.ticketmaster.fr/fr/manifestation/celine-dion-billet/idmanif/655223/idseance/4309061/attribauto",
     "http_status": 403,
-    "checked_at": "2026-09-30T11:30:56.326859+00:00",
+    "checked_at": "2026-09-30T11:44:55.007433+00:00",
     "status": "état inconnu",
     "prices": [],
     "interesting_lines": [],
@@ -14,7 +14,7 @@
   "Fnac Spectacles Celine Dion": {
     "name": "Fnac Spectacles Celine Dion",
     "url": "https://www.fnacspectacles.com/event/celine-dion-paris-2026-plenitude-arena-21511314/",
-    "checked_at": "2026-09-30T11:31:21.418207+00:00",
+    "checked_at": "2026-09-30T11:45:20.230130+00:00",
     "status": "erreur",
     "error": "HTTPSConnectionPool(host='www.fnacspectacles.com', port=443): Read timed out. (read timeout=25)",
     "signature": "b96ecae53e2a22472ae555f9ac98ef647a2b1478003db5c53ce9c21e4e5094ac"
