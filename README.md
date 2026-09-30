@@ -1,45 +1,78 @@
 # Céline Ticket Watch
 
-Petit outil GitHub Actions pour surveiller automatiquement :
+Outil de surveillance pour les pages billets Céline Dion :
 
-- Ticketmaster : Céline Dion, séance fournie
-- Fnac Spectacles : Céline Dion Paris 2026, Plenitude Arena
+- Ticketmaster : séance fournie
+- Fnac Spectacles : Paris 2026, Plenitude Arena
 
-Le workflow tourne toutes les 10 minutes et crée une issue GitHub quand un changement utile est détecté : disponibilité, indisponibilité, prix, texte important, blocage anti-bot, etc.
+## Ce qui marche vraiment
 
-## Installation rapide
+Les sites de billetterie bloquent souvent les serveurs GitHub Actions. Quand GitHub Actions renvoie `403`, `bloqué / anti-bot` ou des timeouts Fnac, ce n'est pas forcément un bug du script : c'est le site qui refuse ou ralentit les accès automatiques depuis les datacenters GitHub.
 
-1. Créer un nouveau repo GitHub, par exemple `celine-ticket-watch`.
-2. Importer tous les fichiers de ce ZIP à la racine du repo.
-3. Aller dans l'onglet **Actions**.
-4. Activer les workflows si GitHub le demande.
-5. Ouvrir le workflow **Watch Celine tickets**.
-6. Cliquer sur **Run workflow** une première fois.
-7. Le fichier `state/state.json` sera créé automatiquement après la première exécution.
-8. Les exécutions suivantes créeront une issue si un changement est détecté.
+La méthode la plus fiable est donc le **watcher local Windows**, qui ouvre les pages avec un vrai navigateur Playwright et un profil persistant.
 
-## Important
+## Installation locale Windows recommandée
 
-GitHub Actions exécute les tâches planifiées environ toutes les 10 minutes via :
+Dans PowerShell, depuis le dossier du repo :
 
-```yaml
-cron: "*/10 * * * *"
+```powershell
+.\install-local-watch.ps1
 ```
 
-Sur les comptes gratuits, GitHub peut parfois décaler les exécutions de quelques minutes.
+Puis lance la surveillance toutes les 10 minutes :
 
-## Alertes
+```powershell
+.\run-local-watch.ps1
+```
 
-Par défaut, l'alerte est une **issue GitHub**.
+Au premier lancement, une fenêtre Chromium peut s'ouvrir. Si Ticketmaster ou Fnac demande une vérification manuelle, fais-la dans cette fenêtre. Le profil est conservé dans `state/browser-profile`, donc les sessions peuvent être réutilisées aux passages suivants.
 
-Pour bien recevoir les alertes :
+En cas d'alerte utile, le script affiche une fenêtre Windows et ouvre la page si `--open-on-alert` est activé.
 
-- vérifier que les notifications GitHub sont activées ;
-- surveiller le repo ;
-- laisser les permissions du workflow avec `issues: write`.
+## Lancement local ponctuel
 
-## Ticketmaster
+```powershell
+python .\local_watch.py
+```
 
-Ticketmaster peut bloquer les requêtes automatiques avec une protection anti-bot. Dans ce cas, le script peut détecter un statut `bloqué / anti-bot`, mais cela ne veut pas dire que des places sont disponibles.
+## Lancement local en boucle
 
-Fnac Spectacles devrait être plus stable à surveiller.
+```powershell
+python .\local_watch.py --loop --interval 600 --open-on-alert
+```
+
+`600` = 600 secondes = 10 minutes.
+
+## GitHub Actions, en mode best effort
+
+Le workflow `.github/workflows/watch-celine.yml` continue de tourner toutes les 10 minutes et peut créer une issue GitHub si un changement utile est détecté.
+
+Mais pour Ticketmaster et parfois Fnac, GitHub Actions peut être bloqué :
+
+- `403` = blocage / anti-bot
+- `429` = trop de requêtes / limitation
+- timeout = site trop lent ou filtrage réseau
+
+Donc GitHub Actions est utile en appoint, mais pas assez fiable comme unique surveillance.
+
+## Alertes GitHub depuis le watcher local optionnel
+
+Le watcher local peut aussi créer une issue GitHub si tu définis un token :
+
+```powershell
+$env:GH_TOKEN="ton_token_github"
+$env:GITHUB_REPOSITORY="plero75/Celine"
+python .\local_watch.py --loop --interval 600 --open-on-alert
+```
+
+Sans token, il fait simplement une alerte locale Windows.
+
+## Fichiers importants
+
+- `local_watch.py` : watcher local recommandé
+- `install-local-watch.ps1` : installation Windows
+- `run-local-watch.ps1` : lancement toutes les 10 minutes
+- `watch.py` : watcher GitHub Actions best effort
+- `.github/workflows/watch-celine.yml` : exécution automatique GitHub
+- `state/local_state.json` : état du watcher local
+- `state/state.json` : état du watcher GitHub Actions
