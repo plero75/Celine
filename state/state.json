@@ -4,12 +4,12 @@
     "url": "https://www.ticketmaster.fr/fr/manifestation/celine-dion-billet/idmanif/655223/idseance/4309061/attribauto",
     "final_url": "https://www.ticketmaster.fr/fr/manifestation/celine-dion-billet/idmanif/655223/idseance/4309061/attribauto",
     "http_status": 403,
-    "checked_at": "2026-09-30T16:58:14.400356+00:00",
-    "status": "état inconnu",
+    "checked_at": "2026-09-30T18:44:51.313704+00:00",
+    "status": "bloqué / anti-bot",
     "prices": [],
     "interesting_lines": [],
-    "signature": "68c49a9b1205abb89ff876cd3b2973da17fe2e7676847bb52690fcca0415c297",
-    "full_hash": "6f0be31f5f3c418288d066100ee16a4401c2390529fa2dbd417d307cd0d0cf4b"
+    "signature": "3c3489e69a1a4e031aad891c3a7ba2ba1b665a705f9c3752154b7c63b392a655",
+    "full_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
   },
   "Fnac Spectacles Celine Dion": {
     "name": "Fnac Spectacles Celine Dion",
