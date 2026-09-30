@@ -164,6 +164,19 @@ def fetch_target(target):
     }
 
 
+def post_github_issue(repo, token, payload):
+    url = f"https://api.github.com/repos/{repo}/issues"
+    return requests.post(
+        url,
+        headers={
+            "Authorization": f"Bearer {token}",
+            "Accept": "application/vnd.github+json",
+        },
+        json=payload,
+        timeout=25,
+    )
+
+
 def create_github_issue(target_name, previous, current):
     token = os.environ.get("GITHUB_TOKEN")
     repo = os.environ.get("GITHUB_REPOSITORY")
@@ -211,21 +224,18 @@ Vérifié le : `{current.get("checked_at", now_iso())}`
 Note : Ticketmaster peut déclencher une protection anti-bot. Une alerte “bloqué / anti-bot” ne veut pas forcément dire que des places sont disponibles.
 """.strip()
 
-    url = f"https://api.github.com/repos/{repo}/issues"
+    payload = {
+        "title": title,
+        "body": body,
+        "labels": ["ticket-watch", "celine-dion"],
+    }
 
-    res = requests.post(
-        url,
-        headers={
-            "Authorization": f"Bearer {token}",
-            "Accept": "application/vnd.github+json",
-        },
-        json={
-            "title": title,
-            "body": body,
-            "labels": ["ticket-watch", "celine-dion"],
-        },
-        timeout=25,
-    )
+    res = post_github_issue(repo, token, payload)
+
+    if res.status_code == 422:
+        print("Création avec labels impossible, nouvelle tentative sans labels.")
+        payload.pop("labels", None)
+        res = post_github_issue(repo, token, payload)
 
     if res.status_code >= 300:
         print(f"Erreur création issue GitHub : {res.status_code} {res.text}")
